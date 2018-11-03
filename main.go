@@ -18,6 +18,7 @@ type Resource struct {
 func main() {
 	d := flag.String("d", "static", "static resources directories, can more than one: \"static,views\"")
 	module := flag.String("m", "static", "module name")
+	beego := flag.Bool("beego", false, "don't use this switch")
 
 	flag.Parse()
 
@@ -55,7 +56,12 @@ func main() {
 		}
 	}
 
-	tpl := template.Must(template.New("go file").Parse(tplString))
+	var tpl *template.Template
+	if *beego {
+		template.Must(template.New("go file").Parse(beegoTplString))
+	} else {
+		template.Must(template.New("go file").Parse(tplString))
+	}
 
 	goFile, err := os.Create("static.go")
 	if err != nil {
